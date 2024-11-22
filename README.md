@@ -16,86 +16,14 @@ Here's what you need to do:
 **Part 1**
 We’ll use the familiar code as a base and add an intermediate operation:
 
-```python
-from pyspark.sql import SparkSession
-
-# Створюємо сесію Spark
-spark = SparkSession.builder \
-    .master("local[*]") \
-    .config("spark.sql.shuffle.partitions", "2") \
-    .appName("MyGoitSparkSandbox") \
-    .getOrCreate()
-
-# Завантажуємо датасет
-nuek_df = spark.read \
-    .option("header", "true") \
-    .option("inferSchema", "true") \
-    .csv('./nuek-vuh3.csv')
-
-nuek_repart = nuek_df.repartition(2)
-
-nuek_processed = nuek_repart \
-    .where("final_priority < 3") \
-    .select("unit_id", "final_priority") \
-    .groupBy("unit_id") \
-    .count()
-
-# Ось ТУТ додано рядок
-nuek_processed = nuek_processed.where("count>2")
-
-nuek_processed.collect()
-
-input("Press Enter to continue...5")
-
-# Закриваємо сесію Spark
-spark.stop()
-```
-1. Run the code.
-2. Take a screenshot of all Jobs (there should be 5).
+Result of code in task_01.py:
+![Result of code in task_01](./screenshots/task_01.png)
 
 ### Part 2
 We’ll add an intermediate action, collect:
 
-```python
-from pyspark.sql import SparkSession
-
-# Створюємо сесію Spark
-spark = SparkSession.builder \
-    .master("local[*]") \
-    .config("spark.sql.shuffle.partitions", "2") \
-    .appName("MyGoitSparkSandbox") \
-    .getOrCreate()
-
-# Завантажуємо датасет
-nuek_df = spark.read \
-    .option("header", "true") \
-    .option("inferSchema", "true") \
-    .csv('./nuek-vuh3.csv')
-
-nuek_repart = nuek_df.repartition(2)
-
-nuek_processed = nuek_repart \
-    .where("final_priority < 3") \
-    .select("unit_id", "final_priority") \
-    .groupBy("unit_id") \
-    .count()
-    
-# Проміжний action: collect
-nuek_processed.collect()
-
-# Ось ТУТ додано рядок
-nuek_processed = nuek_processed.where("count>2")
-
-nuek_processed.collect()
-
-input("Press Enter to continue...5")
-
-# Закриваємо сесію Spark
-spark.stop()
-
-```
-1. Run the code with the additional intermediate action: nuek_processed.collect().
-2. Take a screenshot of all Jobs (there should be 8).
+Result of code in task_02.py:
+![Result of code in task_02](./screenshots/task_02.png)
 
 > 🧠 Think: Why does adding just one intermediate action result in 3 more Jobs?
 
