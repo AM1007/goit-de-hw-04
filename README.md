@@ -13,7 +13,7 @@ Here's what you need to do:
 
 ### Step-by-Step Instructions
 
-**Part 1**
+### Part 1
 We’ll use the familiar code as a base and add an intermediate operation:
 
 Result of code in task_01.py:
