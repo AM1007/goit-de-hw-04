@@ -41,50 +41,7 @@ We’ll introduce a new function: `cache`.
 
 > ☝🏻 No need to dive deep into these technicalities during this practical assignment. The key takeaway is that data can be stored either in memory or on disk, with memory being the far more common option, while disk storage is rare and exotic 😉.
 
-```python
-from pyspark.sql import SparkSession
-
-# Створюємо сесію Spark
-spark = SparkSession.builder \
-    .master("local[*]") \
-    .config("spark.sql.shuffle.partitions", "2") \
-    .appName("MyGoitSparkSandbox") \
-    .getOrCreate()
-
-# Завантажуємо датасет
-nuek_df = spark.read \
-    .option("header", "true") \
-    .option("inferSchema", "true") \
-    .csv('./nuek-vuh3.csv')
-
-nuek_repart = nuek_df.repartition(2)
-
-nuek_processed_cached = nuek_repart \
-    .where("final_priority < 3") \
-    .select("unit_id", "final_priority") \
-    .groupBy("unit_id") \
-    .count() \
-    .cache()  # Додано функцію cache
-
-# Проміжний action: collect
-nuek_processed_cached.collect()
-
-# Ось ТУТ додано рядок
-nuek_processed = nuek_processed_cached.where("count>2")
-
-nuek_processed.collect()
-
-input("Press Enter to continue...5")
-
-# Звільняємо пям'ять від Dataframe
-nuek_processed_cached.unpersist()
-
-# Закриваємо сесію Spark
-spark.stop()
-
-```
-
-1. Run the code using cache() on an intermediate result.
-2. Take a screenshot of all Jobs (there should be 7).
+Result of code in task_03.py:
+![Result of code in task_03](./screenshots/task_03.png)
 
 > 🧠 Think: Why does using `cache()` reduce the number of Jobs?
